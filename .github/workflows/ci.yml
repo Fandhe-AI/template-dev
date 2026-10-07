@@ -77,7 +77,9 @@ jobs:
           make --version | head -n1
           editorconfig-checker --version
           shellcheck --version
+          # リリースバイナリは `v3.6.1` のように v 接頭辞付きで出力する（Homebrew 版は付かない）
           actual_ec="$(editorconfig-checker --version)"
+          actual_ec="${actual_ec#v}"
           actual_sc="$(shellcheck --version | sed -n 's/^version: //p')"
           [ "${actual_ec}" = "${EDITORCONFIG_CHECKER_VERSION}" ] || { echo "::error::editorconfig-checker ${actual_ec} != ${EDITORCONFIG_CHECKER_VERSION}"; exit 1; }
           [ "${actual_sc}" = "${SHELLCHECK_VERSION}" ] || { echo "::error::shellcheck ${actual_sc} != ${SHELLCHECK_VERSION}"; exit 1; }
