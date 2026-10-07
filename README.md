@@ -16,6 +16,9 @@ Fandhe-AI の開発リポジトリ用テンプレートです。言語に依存�
 | `.editorconfig`・`.editorconfig-checker.json` | 文字コード・改行・インデントの宣言と、その検査の除外設定 |
 | `.shellcheckrc` | shellcheck が `source` 先（`scripts/lib.sh`）を追って検査するための設定 |
 | `.envrc`・`.env.example` | direnv による `.env` の読み込みと、その雛形 |
+| `.mcp.json` | Claude Code のプロジェクト共有 MCP サーバー定義（ベースは空） |
+| `.gitmodules` | submodule 定義（ベースは空。記入例をコメントで記載） |
+| `.github/workflows/` | CI・AI PR レビュー・外部ソース自動追従（後述の「CI」） |
 
 ## 必要なツール
 
@@ -67,6 +70,23 @@ direnv allow  # direnv を使う場合のみ。.envrc の読み込みを許可�
   （`<type>[(<scope>)][!]: <要約>`、type は `feat` `fix` `docs` `style` `refactor` `perf` `test` `build` `ci` `chore` `revert`）
 
 hooks に引っかかった場合は原因を修正してから再コミットしてください。`--no-verify` によるバイパスは行いません。
+
+## CI
+
+| ワークフロー | 内容 |
+|---|---|
+| `ci.yml` | `check`: ローカル・hooks と同じ `make check` を実行する（editorconfig-checker / shellcheck はバージョン固定 + SHA256 検証で導入）。`pr-title`: PR タイトルを commit-msg フックと同じスクリプトで検証する（squash merge でコミット件名になるため）。`ci-complete`: 全ジョブ結果の集約 |
+| `ai-review.yml` | Fandhe-AI/actions の ai-review（codex）による PR 自動レビュー。Actions variable `CODEX_HOME_DIR` が未設定の間は skip される |
+| `update-external.yml` | エージェントスキル（`skills-lock.json`）と submodule（`.gitmodules`）の日次自動追従 PR。secrets は org の `SUBMODULE_PAT` を使う（`SKILLS_PAT` 未登録時は共通側が `SUBMODULE_PAT` へフォールバック）。作成する PR には `dependencies` / `automated` ラベルが付く |
+
+- ruleset の required status checks には `ci-complete`（と ai-review の `codex / *`）を登録する。
+  ruleset・マージ設定の導入は `setup-repo-guards` スキルの手順に従う
+- CI にジョブを追加したら `ci-complete` の `needs` にも必ず追加する
+
+## MCP サーバー
+
+`.mcp.json` はベースとして空（`"mcpServers": {}`）にしてある。派生リポジトリで必要なサーバーを追加する。
+API キー等は値を直接書かず `"${EXAMPLE_API_KEY:-}"` のように環境変数参照とし、実値は `.env`（direnv 経由）に置く。
 
 ## 環境変数
 
