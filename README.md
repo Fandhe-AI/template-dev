@@ -9,6 +9,8 @@ Fandhe-AI の開発リポジトリ用テンプレートです。言語に依存�
 | パス | 役割 |
 |---|---|
 | `.agents/skills/`・`.claude/skills/` | エージェント用スキル（`skills-lock.json` で管理する外部取得物。`.claude/skills/` は `.agents/skills/` への symlink） |
+| `.claude/agents/` | Claude Code のサブエージェント定義（`quality/plan-verifier.md`: `create-plan` の計画に対する作業完了の読み取り専用検証）。[Fandhe-AI/agent-cli-skills](https://github.com/Fandhe-AI/agent-cli-skills) の `.claude/` から取り込み |
+| `.claude/rules/` | Claude Code のルール（`dotclaude-via-temp.md`: `.claude/` 配下は `_/dotclaude/` で作成してから `mv` で配置する運用）。取り込み元は同上 |
 | `Makefile` | `scripts/` を呼ぶだけの薄い入口（`make help` で一覧） |
 | `scripts/` | 処理の実体（`help` / `doctor` / `setup` / `check`）。Make なしでも直接実行できる |
 | `scripts/hooks/` | lefthook から呼ばれる Git hooks の実体 |
