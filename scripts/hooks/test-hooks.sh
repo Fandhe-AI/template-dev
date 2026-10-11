@@ -18,13 +18,12 @@
 # 検出させる例示値はすべて実行時に組み立て、本ファイル自体のコミットが secret-scan に
 # 検知されないようにする。
 set -euo pipefail
-
-if [ "$#" -ne 0 ]; then
-  echo "usage: $(basename "$0") (no arguments)" >&2
-  exit 2
-fi
-
 HOOKS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../lib.sh
+source "${HOOKS_DIR}/../lib.sh"
+
+reject_args "$(basename "$0")" "$@"
+
 SECRET_SCAN="${HOOKS_DIR}/secret-scan.sh"
 COMMIT_MSG_CHECK="${HOOKS_DIR}/commit-msg-check.sh"
 HOOK_BASH="${BASH}"
