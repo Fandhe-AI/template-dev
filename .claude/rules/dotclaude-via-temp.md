@@ -35,11 +35,16 @@ description: >
 # 単一ファイル
 mv _/dotclaude/rules/foo.md .claude/rules/foo.md
 
-# ディレクトリごと
+# ディレクトリごと（新規作成時のみ。移動先 .claude/skills/bar が存在しないこと）
 mv _/dotclaude/skills/bar .claude/skills/bar
 
-# 後片付け — 自分が使ったパスのみ削除
-rm -rf _/dotclaude/rules/foo.md
+# 既存ディレクトリの編集 — ファイル単位で対応する最終パスへ移動する
+# （ディレクトリごと mv すると .claude/skills/bar/bar に入れ子で配置され、元のファイルが更新されない）
+mv _/dotclaude/skills/bar/SKILL.md .claude/skills/bar/SKILL.md
+rmdir _/dotclaude/skills/bar _/dotclaude/skills 2>/dev/null   # 空なら削除
+
+# 後片付け — 自分が使ったパスのみ削除（移動済みなら不要。単一ファイルは rm -f）
+rm -f _/dotclaude/rules/foo.md
 rmdir _/dotclaude/rules 2>/dev/null   # 空なら削除
 rmdir _/dotclaude 2>/dev/null         # 空なら削除
 ```
@@ -47,6 +52,7 @@ rmdir _/dotclaude 2>/dev/null         # 空なら削除
 ## 注意事項
 
 - 移動先のディレクトリが存在しない場合は `mkdir -p` で事前に作成する
+- ディレクトリ単位の `mv` は移動先が存在しない新規作成時に限る。既存ディレクトリの編集はファイル単位で移動する
 - **`rm -rf _/dotclaude` は禁止** — 並行作業が `_/dotclaude/` を共有している可能性がある
 - 自分が作成したファイル・サブディレクトリのみ削除する
 - `rmdir` は空ディレクトリにのみ作用するため、他の作業のファイルを誤って消さない
