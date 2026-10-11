@@ -12,6 +12,7 @@
 #
 # 言語固有の build / test / fmt / lint 等は派生リポジトリで追加する。
 # 中身の無いターゲット（`@true` 等）は呼び出し元が終了コードを信用してしまうため置かない。
+# ターゲット・scripts/ の追加・変更時は .claude/rules/makefile.md に従う。
 
 .DEFAULT_GOAL := help
 
