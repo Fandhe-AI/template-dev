@@ -10,7 +10,7 @@ Fandhe-AI の開発リポジトリ用テンプレートです。言語に依存�
 |---|---|
 | `.agents/skills/`・`.claude/skills/` | エージェント用スキル（`skills-lock.json` で管理する外部取得物。`.claude/skills/` は `.agents/skills/` への symlink） |
 | `.claude/agents/` | Claude Code のサブエージェント定義（`quality/plan-verifier.md`: `create-plan` の計画に対する作業完了の読み取り専用検証）。[Fandhe-AI/agent-cli-skills](https://github.com/Fandhe-AI/agent-cli-skills) の `.claude/` から取り込み |
-| `.claude/rules/` | Claude Code のルール（`dotclaude-via-temp.md`: `.claude/` 配下は `_/dotclaude/` で作成してから `mv` で配置する運用）。取り込み元は同上。`git-hooks.md`（`lefthook.yml`・`scripts/hooks/` 編集時のみ読み込まれる、フックの時間予算と CI との役割分担）は本リポジトリ独自 |
+| `.claude/rules/` | Claude Code のルール（`dotclaude-via-temp.md`: `.claude/` 配下は `_/dotclaude/` で作成してから `mv` で配置する運用）。取り込み元は同上。本リポジトリ独自のルール（対象ファイルの編集時のみ読み込まれる）: `git-hooks.md`（`lefthook.yml`・`scripts/hooks/`。フックの時間予算と CI との役割分担）、`makefile.md`（`Makefile`・`scripts/`。薄い入口の書き方・ターゲット追加手順・契約）、`github-actions.md`（`.github/workflows/`。runner 方針・必須チェック・発火条件・ジョブ追加時のチェックリスト） |
 | `Makefile` | `scripts/` を呼ぶだけの薄い入口（`make help` で一覧） |
 | `scripts/` | 処理の実体（`help` / `doctor` / `setup` / `check`）。Make なしでも直接実行できる |
 | `scripts/hooks/` | lefthook から呼ばれる Git hooks の実体 |
@@ -92,6 +92,8 @@ Linux・macOS（標準の bash 3.2 を含む）について実行します。`sc
 - ruleset の required status checks には `ci-complete`（と ai-review の `codex / *`）を登録する。
   ruleset・マージ設定の導入は `setup-repo-guards` スキルの手順に従う
 - CI にジョブを追加したら `ci-complete` の `needs` にも必ず追加する
+- runner 方針（public は GitHub ホステッド、ai-review の review ジョブのみ self-hosted の例外）・発火条件・
+  ジョブ追加時のチェックリストは `.claude/rules/github-actions.md` に定義している
 
 ## MCP サーバー
 
@@ -106,7 +108,7 @@ API キー等は値を直接書かず `"${EXAMPLE_API_KEY:-}"` のように環�
 
 ## 派生リポジトリでの拡張
 
-1. **言語固有のコマンド**: `scripts/` に処理（例: `scripts/verify.sh`）を追加し、`Makefile` に 1 行で呼ぶターゲットと `## ` コメントを足し、`scripts/help.sh` の一覧も更新する（中身の無いターゲット `@true` 等は置かない）
+1. **言語固有のコマンド**: `scripts/` に処理（例: `scripts/verify.sh`）を追加し、`Makefile` に 1 行で呼ぶターゲットと `## ` コメントを足し、`scripts/help.sh` の一覧も更新する（中身の無いターゲット `@true` 等は置かない。手順と規約は `.claude/rules/makefile.md`）
 2. **`make check` の拡張**: `scripts/check.sh` に fmt チェック・lint 等を追記する（自動修正は別ターゲットに分ける）
 3. **hooks の追加**: `.claude/rules/git-hooks.md` の時間予算と判断手順に従う。staged 限定で 1 秒未満の検査のみ `lefthook.yml` に job を追加し（実体が長くなる場合は `scripts/hooks/` へ切り出す）、テスト・ビルド等は `ci.yml` にジョブを追加して `ci-complete` の `needs` にも加える
 4. **EditorConfig**: 言語ごとのセクション（例: `[*.rs] indent_size = 4`）を `.editorconfig` に追加する

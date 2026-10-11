@@ -3,6 +3,8 @@
 #
 # 有効化のスイッチは呼び出し先 reusable workflow の fail-closed ガードに従う:
 # Actions variable `CODEX_HOME_DIR` が未設定の間は review / post_feedback が skip される。
+#
+# public リポジトリで self-hosted runner を使う例外とその根拠は .claude/rules/github-actions.md に記載。
 name: AI PR review
 
 on:
