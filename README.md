@@ -10,7 +10,7 @@ Fandhe-AI の開発リポジトリ用テンプレートです。言語に依存�
 |---|---|
 | `.agents/skills/`・`.claude/skills/` | エージェント用スキル（`skills-lock.json` で管理する外部取得物。`.claude/skills/` は `.agents/skills/` への symlink） |
 | `.claude/agents/` | Claude Code のサブエージェント定義（`quality/plan-verifier.md`: `create-plan` の計画に対する作業完了の読み取り専用検証）。[Fandhe-AI/agent-cli-skills](https://github.com/Fandhe-AI/agent-cli-skills) の `.claude/` から取り込み |
-| `.claude/rules/` | Claude Code のルール（`dotclaude-via-temp.md`: `.claude/` 配下は `_/dotclaude/` で作成してから `mv` で配置する運用）。取り込み元は同上。本リポジトリ独自のルール（対象ファイルの編集時のみ読み込まれる）: `git-hooks.md`（`lefthook.yml`・`scripts/hooks/`。フックの時間予算と CI との役割分担）、`makefile.md`（`Makefile`・`scripts/`。薄い入口の書き方・ターゲット追加手順・契約）、`github-actions.md`（`.github/workflows/`。runner 方針・必須チェック・発火条件・ジョブ追加時のチェックリスト） |
+| `.claude/rules/` | Claude Code のルール（`dotclaude-via-temp.md`: `.claude/` 配下は `_/dotclaude/` で作成してから `mv` で配置する運用）。取り込み元は同上。本リポジトリ独自のルール（対象ファイルの編集時のみ読み込まれる）: `git-hooks.md`（`lefthook.yml`・`scripts/hooks/`。フックの時間予算と CI との役割分担）、`makefile.md`（`Makefile`・`scripts/`。薄い入口の書き方・ターゲット追加手順・契約）、`github-actions.md`（`.github/workflows/`。runner 方針・必須チェック・発火条件・ジョブ追加時のチェックリスト・キャッシュ方針） |
 | `Makefile` | `scripts/` を呼ぶだけの薄い入口（`make help` で一覧） |
 | `scripts/` | 処理の実体（`help` / `doctor` / `setup` / `check`）。Make なしでも直接実行できる |
 | `scripts/hooks/` | lefthook から呼ばれる Git hooks の実体 |
@@ -93,7 +93,7 @@ Linux・macOS（標準の bash 3.2 を含む）について実行します。`sc
   ruleset・マージ設定の導入は `setup-repo-guards` スキルの手順に従う
 - CI にジョブを追加したら `ci-complete` の `needs` にも必ず追加する
 - runner 方針（public は GitHub ホステッド、ai-review の review ジョブのみ self-hosted の例外）・発火条件・
-  ジョブ追加時のチェックリストは `.claude/rules/github-actions.md` に定義している
+  ジョブ追加時のチェックリスト・キャッシュ方針は `.claude/rules/github-actions.md` に定義している
 
 ## MCP サーバー
 
